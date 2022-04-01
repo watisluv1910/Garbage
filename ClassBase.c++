@@ -1,63 +1,82 @@
 #include "ClassBase.h"
 
-ClassBase* ClassBase::progenitor = new ClassBase();
+// creating progenitor object
+ClassBase* ClassBase::progenitor = new ClassBase(); 
 
 ClassBase::ClassBase(string objectName, ClassBase* p_Parent) {
 
-	/*this->subordinateObjName = subordinateObjName;
-	currentObjState = 0;
-
-	this->headObjPointer = headObjPointer;
-
-	if (headObjPointer) {
-
-		headObjPointer->subordinateObjList.push_back(this);
-	}*/
-
 	this->objectName = objectName;
-	if (p_Parent) {
+	if (p_Parent) { // if object isn't a head
 
-		this->p_Parent = p_Parent;
+		setParent(p_Parent);
+
+		// adding current object to the children list of its parent:
 		p_Parent->childrenList.push_back(this);
 	}
-	else {
+	else { // if object is head
 
-		setParent(progenitor);
-		(this->p_Parent)->childrenList.push_back(this);
+		setParent(progenitor); // now progenitor is a parent of a head object
+
+		// adding head object to the children list of progenitor:
+		progenitor->childrenList.push_back(this);
 	}
 
-	childrenList.push_back(this);
+	// parent object is always at the 1st pos 
+	// (0 index) in its children list:
+	childrenList.push_back(this); 
 };
 
+// setter for name
 void ClassBase::setObjName(string objectName) {
 
 	this->objectName = objectName;
 };
 
+// getter for name
 string ClassBase::getObjName() {
 
 	return objectName;
 };
 
+// solves the problem of access to the private field 
+// of ClassBase object from ClassApplication (without using protected)
 void ClassBase::setParent(ClassBase* p_Parent) {
 
 	this->p_Parent = p_Parent;
 };
 
-//void ClassBase::addChild(ClassBase* p_Child) {
-//
-//
-//};
-
-//void ClassBase::deleteChild(string objectName) {
-//
-//
-//};
-
+// is used in formTree ClassApplication method
 ClassBase* ClassBase::getObject(string objectName) {
 
+	// tempVar is needed also to prevent 
+	// error in case of incorrect enter, for example:
+	// 
+	// Incorrect head object enter (ignores Object_1):
+	// Object_root Object_1
+	// Object_1 Object_2
+	// 
+	// Will be equal to:
+	// Object_root
+	// Object_root Object_2
+	//
+	// Incorrect inheritance (ignores Object_1):
+	// Object_root
+	// Object_1 Object_2
+	// Object_1 Object_3
+	// Object_1 Object_4
+	// Object_3 Object_5
+	// 
+	// Will be equal to:
+	// Object_root
+	// Object_root Object_2
+	// Object_2 Object_3
+	// Object_3 Object_4
+	// Object_3 Object_5
+
+	// temporary pointer at ClassBase object
 	ClassBase* tempVar = nullptr;
 
+	// iteration over children of current object:
 	for (size_t i = 0; i < childrenList.size(); i++) {
 
 		tempVar = childrenList.at(i);
@@ -66,7 +85,8 @@ ClassBase* ClassBase::getObject(string objectName) {
 			return childrenList.at(i);
 		}
 	}
-
+	
+	// iteration over ALL children using recursion:
 	for (size_t i = 1; i < childrenList.size(); i++) {
 
 		tempVar = (childrenList.at(i)->getObject(objectName));
@@ -76,16 +96,12 @@ ClassBase* ClassBase::getObject(string objectName) {
 		}
 	}
 
-	return tempVar;
+	return tempVar; // returns pointer at the latest entered object (child probably)
 };
-
-//ClassBase* ClassBase::getObject(string objectPath) {
-//
-//
-//};
 
 void ClassBase::showTree() {
 
+	// iteration over children of current object:
 	for (size_t i = 0; i < childrenList.size(); i++) {
 
 		if (!i) {
@@ -95,16 +111,20 @@ void ClassBase::showTree() {
 
 		cout << childrenList.at(i)->getObjName();
 
+		// if element is not the last child:
 		if (i + 1 < childrenList.size()) {
 
 			cout << "  ";
 		}
 	}
 
+	// iteration over ALL children children using recursion:
 	for (size_t i = 1; i < childrenList.size(); i++) {
-
+		
+		// checking the existance of probably one child:
 		if (childrenList.at(i)->childrenList.size() > 1) {
 
+			// showTree method call for each child (recursion)
 			childrenList.at(i)->showTree();
 		}
 	}
