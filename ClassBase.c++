@@ -54,7 +54,7 @@ void ClassBase::setParent(ClassBase* p_Parent) {
 //
 //};
 
-ClassBase* ClassBase::getChild(string objectName) {
+ClassBase* ClassBase::getObject(string objectName) {
 
 	ClassBase* tempVar = nullptr;
 
@@ -69,10 +69,10 @@ ClassBase* ClassBase::getChild(string objectName) {
 
 	for (size_t i = 1; i < childrenList.size(); i++) {
 
-		tempVar = (childrenList.at(i)->getChild(objectName));
-		if (childrenList.at(i)->getChild(objectName)->getObjName() == objectName) {
+		tempVar = (childrenList.at(i)->getObject(objectName));
+		if (childrenList.at(i)->getObject(objectName)->getObjName() == objectName) {
 
-			return childrenList.at(i)->getChild(objectName);
+			return childrenList.at(i)->getObject(objectName);
 		}
 	}
 

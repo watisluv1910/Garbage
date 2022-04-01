@@ -20,7 +20,7 @@ public:
 	void setParent(ClassBase* p_Parent);
 	//void addChild(ClassBase* p_Child);
 	//void deleteChild(string objectName);
-	ClassBase* getChild(string objectName);
+	ClassBase* getObject(string objectName);
 	//ClassBase* getObject(string objectPath);
 	void showTree();
 

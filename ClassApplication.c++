@@ -21,7 +21,7 @@ void ClassApplication::formTree() {
 			return;
 		}
 
-		ClassBase* grandchild = new ClassBase(childName, progenitor->getChild(parentName));
+		ClassBase* grandchild = new ClassBase(childName, progenitor->getObject(parentName));
 
 		parentName = childName;
 	}
