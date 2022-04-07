@@ -1,7 +1,4 @@
-#include <iostream>
 #include "ClassApplication.h"
-
-using namespace std;
 
 int main() {
     

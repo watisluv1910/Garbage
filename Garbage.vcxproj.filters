@@ -24,6 +24,9 @@
     <ClCompile Include="ClassApplication.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="ClassBranch.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VariadicTable.h">
@@ -33,6 +36,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="ClassApplication.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassBranch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

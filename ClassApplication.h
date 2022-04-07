@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ClassBase.h"
 
 class ClassApplication : public ClassBase {

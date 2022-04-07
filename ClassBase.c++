@@ -1,5 +1,7 @@
 #include "ClassBase.h"
 
+using std::cout;
+
 // creating progenitor object
 ClassBase* ClassBase::progenitor = new ClassBase(); 
 
@@ -20,10 +22,6 @@ ClassBase::ClassBase(string objectName, ClassBase* p_Parent) {
 		// adding head object to the children list of progenitor:
 		progenitor->childrenList.push_back(this);
 	}
-
-	// parent object is always at the 1st pos 
-	// (0 index) in its children list:
-	childrenList.push_back(this); 
 };
 
 // setter for name
@@ -48,84 +46,42 @@ void ClassBase::setParent(ClassBase* p_Parent) {
 // is used in formTree ClassApplication method
 ClassBase* ClassBase::getObject(string objectName) {
 
-	// tempVar is needed also to prevent 
-	// error in case of incorrect enter, for example:
-	// 
-	// Incorrect head object enter (ignores Object_1):
-	// Object_root Object_1
-	// Object_1 Object_2
-	// 
-	// Will be equal to:
-	// Object_root
-	// Object_root Object_2
-	//
-	// Incorrect inheritance (ignores Object_1):
-	// Object_root
-	// Object_1 Object_2
-	// Object_1 Object_3
-	// Object_1 Object_4
-	// Object_3 Object_5
-	// 
-	// Will be equal to:
-	// Object_root
-	// Object_root Object_2
-	// Object_2 Object_3
-	// Object_3 Object_4
-	// Object_3 Object_5
-
 	// temporary pointer at ClassBase object
 	ClassBase* tempVar = nullptr;
 
 	// iteration over children of current object:
 	for (size_t i = 0; i < childrenList.size(); i++) {
 
-		tempVar = childrenList.at(i);
-		if (childrenList.at(i)->getObjName() == objectName) {
+		tempVar = childrenList.at(i)->getObject(objectName);
+		if (tempVar->getObjName() == objectName) {
 
-			return childrenList.at(i);
-		}
-	}
-	
-	// iteration over ALL children using recursion:
-	for (size_t i = 1; i < childrenList.size(); i++) {
-
-		tempVar = (childrenList.at(i)->getObject(objectName));
-		if (childrenList.at(i)->getObject(objectName)->getObjName() == objectName) {
-
-			return childrenList.at(i)->getObject(objectName);
+			return tempVar;
 		}
 	}
 
-	return tempVar; // returns pointer at the latest entered object (child probably)
+	return this; // returns the pointer at itself
 };
 
 void ClassBase::showTree() {
 
+	// The tree is printed with the help of recursion
+	// The exit condition is the lack of children objects
+
+	if (!childrenList.size()) { return; }
+
+	// output of parent object
+	cout << '\n' << this->getObjName();
+
 	// iteration over children of current object:
-	for (size_t i = 0; i < childrenList.size(); i++) {
+	for (const auto child : childrenList) {
 
-		if (!i) {
-
-			cout << endl;
-		}
-
-		cout << childrenList.at(i)->getObjName();
-
-		// if element is not the last child:
-		if (i + 1 < childrenList.size()) {
-
-			cout << "  ";
-		}
+		cout << "  " << child->getObjName();
 	}
-
+	
 	// iteration over ALL children children using recursion:
-	for (size_t i = 1; i < childrenList.size(); i++) {
-		
-		// checking the existance of probably one child:
-		if (childrenList.at(i)->childrenList.size() > 1) {
+	for (const auto child : childrenList) {
 
-			// showTree method call for each child (recursion)
-			childrenList.at(i)->showTree();
-		}
+		// showTree method call for each child
+		child->showTree();
 	}
 };

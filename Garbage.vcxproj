@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="ClassApplication.c++" />
     <ClCompile Include="ClassBase.c++" />
+    <ClCompile Include="ClassBranch.c++" />
     <ClCompile Include="Source.c++" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassApplication.h" />
     <ClInclude Include="ClassBase.h" />
+    <ClInclude Include="ClassBranch.h" />
     <ClInclude Include="VariadicTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
