@@ -11,16 +11,10 @@ ClassBase::ClassBase(string objectName, ClassBase* p_Parent) {
 	if (p_Parent) { // if object isn't a head
 
 		setParent(p_Parent);
-
-		// adding current object to the children list of its parent:
-		p_Parent->childrenList.push_back(this);
 	}
 	else { // if object is head
 
 		setParent(progenitor); // now progenitor is a parent of a head object
-
-		// adding head object to the children list of progenitor:
-		progenitor->childrenList.push_back(this);
 	}
 };
 
@@ -39,6 +33,20 @@ string ClassBase::getObjName() {
 // solves the problem of access to the private field 
 // of ClassBase object from ClassApplication (without using protected)
 void ClassBase::setParent(ClassBase* p_Parent) {
+
+	if (p_Parent) {
+
+		for (size_t i = 0; i < p_Parent->childrenList.size(); i++) {
+
+			if (p_Parent->childrenList.at(i) == this) {
+
+				p_Parent->childrenList.erase(p_Parent->childrenList.begin() + i);
+				break;
+			}
+		}
+
+		p_Parent->childrenList.push_back(this);
+	}
 
 	this->p_Parent = p_Parent;
 };
