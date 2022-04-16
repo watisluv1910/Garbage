@@ -139,16 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ClassApplication.c++" />
-    <ClCompile Include="ClassBase.c++" />
-    <ClCompile Include="ClassBranch.c++" />
-    <ClCompile Include="Source.c++" />
+    <ClCompile Include="application_class.c++" />
+    <ClCompile Include="base_class.c++" />
+    <ClCompile Include="branch_class_2.c++" />
+    <ClCompile Include="branch_class_3.c++" />
+    <ClCompile Include="branch_class_4.c++" />
+    <ClCompile Include="branch_class_5.c++" />
+    <ClCompile Include="branch_class_6.c++" />
+    <ClCompile Include="main.c++" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassApplication.h" />
-    <ClInclude Include="ClassBase.h" />
-    <ClInclude Include="ClassBranch.h" />
-    <ClInclude Include="VariadicTable.h" />
+    <ClInclude Include="application_class.h" />
+    <ClInclude Include="base_class.h" />
+    <ClInclude Include="branch_class_2.h" />
+    <ClInclude Include="branch_class_3.h" />
+    <ClInclude Include="branch_class_4.h" />
+    <ClInclude Include="branch_class_5.h" />
+    <ClInclude Include="branch_class_6.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

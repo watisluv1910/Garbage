@@ -15,30 +15,51 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.c++">
+    <ClCompile Include="main.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ClassBase.c++">
+    <ClCompile Include="base_class.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ClassApplication.c++">
+    <ClCompile Include="application_class.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ClassBranch.c++">
+    <ClCompile Include="branch_class_2.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_3.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_4.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_5.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_6.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VariadicTable.h">
+    <ClInclude Include="base_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ClassBase.h">
+    <ClInclude Include="application_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ClassApplication.h">
+    <ClInclude Include="branch_class_2.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ClassBranch.h">
+    <ClInclude Include="branch_class_3.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="branch_class_4.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="branch_class_5.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="branch_class_6.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
