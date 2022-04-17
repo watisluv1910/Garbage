@@ -17,41 +17,39 @@ BaseClass::BaseClass(string obj_name, BaseClass* parent_ptr)
 		// making progenitor a parent of the head object
 		set_obj_parent(progenitor); 
 	}
-};
+}
 
 void BaseClass::set_obj_name(string obj_name) 
 {
 	this->obj_name_ = obj_name;
-};
+}
 
 string BaseClass::get_obj_name() 
 {
 	return obj_name_;
-};
+}
 
 void BaseClass::set_obj_parent(BaseClass* parent_ptr) 
 {
-	if (parent_ptr) { // if object isn't a head
-
-		for (size_t i = 0; i < parent_ptr->children_list_.size(); i++) {
-
-			if (parent_ptr->children_list_.at(i) == this) {
-
+	if (parent_ptr) // if object isn't a head
+	{
+		for (size_t i = 0; i < parent_ptr->children_list_.size(); i++) 
+		{
+			if (parent_ptr->children_list_.at(i) == this) 
+			{
 				parent_ptr->children_list_.erase(parent_ptr->children_list_.begin() + i);
 				break;
 			}
 		}
-
 		parent_ptr->children_list_.push_back(this);
 	}
-
 	this->parent_ptr_ = parent_ptr;
 }
 
 BaseClass* BaseClass::get_obj_parent()
 {
 	return parent_ptr_;
-};
+}
 
 BaseClass* BaseClass::get_obj_ptr(string obj_name) 
 {
@@ -61,17 +59,17 @@ BaseClass* BaseClass::get_obj_ptr(string obj_name)
 	BaseClass* temp_variable = nullptr;
 
 	// iteration over children of current object with recursion
-	for (size_t i = 0; i < children_list_.size(); i++) {
-
+	for (size_t i = 0; i < children_list_.size(); i++) 
+	{
 		temp_variable = children_list_.at(i)->get_obj_ptr(obj_name);
-		if (temp_variable->get_obj_name() == obj_name) {
-
+		if (temp_variable->get_obj_name() == obj_name) 
+		{
 			return temp_variable;
 		}
 	}
 
 	return this; // returns the pointer at itself if no matches were found
-};
+}
 
 void BaseClass::set_obj_state(bool state)
 {
@@ -89,7 +87,7 @@ void BaseClass::set_obj_state(bool state)
 		this->state_ = true;
 	}
 	return;
-};
+}
 
 bool BaseClass::get_obj_state()
 {
@@ -133,7 +131,7 @@ void BaseClass::ShowNextTreeObj(BaseClass* current_obj_ptr,
 		ShowNextTreeObj(current_obj_ptr->children_list_.at(i), 
 			tree_parameter, tree_level + 1);
 	}
-};
+}
 
 void BaseClass::ShowTree(const string& tree_parameter)
 {

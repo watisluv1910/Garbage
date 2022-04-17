@@ -1,7 +1,7 @@
 #include "application_class.h"
 
-int main() {
-    
+int main() 
+{
     ApplicationClass object; // Application object creation
 
     object.FormTree();
