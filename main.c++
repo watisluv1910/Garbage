@@ -1,13 +1,11 @@
-#include "application_class.h"
+﻿#include "application_class.h"
 
-int main() 
+int main()
 {
     ApplicationClass object; // Application object creation
 
     object.FormTree();
 
-    object.SetStates();
-
-    // returning the result of ExecuteApp method according to the task:
+    // Returning the result of ExecuteApp method according to the task:
     return object.ExecuteApp();
 }

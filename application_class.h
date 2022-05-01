@@ -6,16 +6,19 @@
 class ApplicationClass : public BaseClass {
 public:
 
-	// parametrized constructor
+	// Parametrized constructor
 	ApplicationClass(BaseClass* parent_ptr = nullptr);
 	
-	// main tree building method
+	// Main tree building method
 	void FormTree();
 
-	// main states setter method
+	// Main states setter method
 	void SetStates();
 
-	// main application method
+	// Main tree navigation method
+	void StartTreeNavigation();
+
+	// Main application method
 	int ExecuteApp();
 };
 
