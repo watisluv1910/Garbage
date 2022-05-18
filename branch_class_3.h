@@ -7,8 +7,11 @@ class BranchClass_3 : public BaseClass
 {
 public:
 
-	BranchClass_3(string obj_name, BaseClass* parent_ptr)
-		: BaseClass(obj_name, parent_ptr) {};
+	BranchClass_3(string obj_name, BaseClass* parent_ptr);
+
+	void ShowSignal(string path) override;
+
+	void ShowHandler(string path, string message) override;
 };
 
 #endif // !BRANCH_CLASS_3_H

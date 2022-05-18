@@ -1,4 +1,9 @@
 #include "base_class.h"
+#include "branch_class_2.h"
+#include "branch_class_3.h"
+#include "branch_class_4.h"
+#include "branch_class_5.h"
+#include "branch_class_6.h"
 
 using std::cout;
 
@@ -26,7 +31,7 @@ void BaseClass::set_obj_name(string obj_name)
 
 string BaseClass::get_obj_name() 
 {
-	return obj_name_;
+	return this->obj_name_;
 }
 
 void BaseClass::set_obj_parent(BaseClass* parent_ptr) 
@@ -65,7 +70,7 @@ void BaseClass::set_obj_parent(BaseClass* parent_ptr)
 
 BaseClass* BaseClass::get_obj_parent()
 {
-	return parent_ptr_;
+	return this->parent_ptr_;
 }
 
 BaseClass* BaseClass::get_obj_by_name(string obj_name) 
@@ -112,6 +117,10 @@ void BaseClass::set_obj_state(bool state)
 		// If all previous parents in branch are ready:
 		this->state_ = true;
 	}
+	else
+	{
+		this->state_ = false;
+	}
 	return;
 }
 
@@ -120,9 +129,152 @@ bool BaseClass::get_obj_state()
 	return this->state_;
 }
 
+bool BaseClass::AreEqualConnections(connection_data*& a_connection,
+	connection_data*& b_connection)
+{
+	// Explanation:
+	// This method compares two objects of connection_data struct
+	// by the equality of all their parameters
+
+	if (a_connection->handler_ptr == b_connection->handler_ptr &&
+		a_connection->signal_ptr == b_connection->signal_ptr &&
+		a_connection->object_ptr == b_connection->object_ptr)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void BaseClass::SetConnection(TYPE_SIGNAL signal_ptr,
+	TYPE_HANDLER handler_ptr, BaseClass* object_ptr)
+{
+	// Creating temporary connection_data struct object:
+	connection_data* temp_connection 
+		= new connection_data(signal_ptr, handler_ptr, object_ptr);
+
+	// Iteration over all current object's connections:
+	for (size_t i = 0; i < connections_list_.size(); i++)
+	{
+		// If there already is the same connection, as we want to set - exit:
+		if (AreEqualConnections(connections_list_.at(i), temp_connection))
+		{
+			return;
+		}
+	}
+
+	// Adding connection to the current object's connections list:
+	connections_list_.push_back(temp_connection);
+}
+
+void BaseClass::DeleteConnection(TYPE_SIGNAL signal_ptr,
+	TYPE_HANDLER handler_ptr, BaseClass* object_ptr)
+{
+	// Creating temporary connection_data struct object:
+	connection_data* temp_connection
+		= new connection_data(signal_ptr, handler_ptr, object_ptr);
+
+	// Iteration over all current object's connections:
+	for (size_t i = 0; i < connections_list_.size(); i++)
+	{
+		// If there is the same connection in the list, as we want to delete:
+		if (AreEqualConnections(connections_list_.at(i), temp_connection))
+		{
+			// Deleting connection from the vector:
+			connections_list_.erase(connections_list_.begin() + i);
+			return;
+		}
+	}
+}
+
+void BaseClass::set_class_number(size_t class_number)
+{
+	this->branch_class_num_ = class_number;
+}
+
+size_t BaseClass::get_class_number()
+{
+	return this->branch_class_num_;
+}
+
+string BaseClass::get_absolute_path()
+{
+	if (this == progenitor->children_list_.front())
+	{
+		// If current object is head:
+		return "/";
+	}
+	else
+	{
+		string path; // Absolute path to current object
+
+		BaseClass* current_obj_ptr = this;
+
+		// Iteration over all branch from bottom to top,
+		// until the head object won't be reached:
+		while (current_obj_ptr != progenitor->children_list_.front())
+		{
+			path = "/" + current_obj_ptr->get_obj_name() + path;
+
+			// Transition to the higher branch level:
+			current_obj_ptr = current_obj_ptr->get_obj_parent();
+		}
+
+		// Returning absolute path:
+		return path;
+	}
+}
+
+void BaseClass::EmitSignal(TYPE_SIGNAL signal_ptr, string& message)
+{
+	// Explanation:
+	// This method "initializes" signal
+
+	// If the there are no connections with 
+	// current object or object is disabled:
+	if (connections_list_.empty() || !get_obj_state())
+	{
+		return;
+	}
+
+	string current_path = get_absolute_path();
+
+	bool is_first_signal = true;
+
+	// Iteration over all current object's connections:
+	for (size_t i = 0; i < connections_list_.size(); i++)
+	{
+		if (connections_list_.at(i)->signal_ptr == signal_ptr)
+		{
+			if (is_first_signal)
+			{
+				ShowSignal(current_path);
+				is_first_signal = false;
+			}
+
+			// Is the object is ready:
+			if (connections_list_.at(i)->object_ptr->get_obj_state())
+			{
+				ShowHandler(
+					connections_list_.at(i)->object_ptr->get_absolute_path(), message);
+			}
+		}
+	}
+}
+
+void BaseClass::ShowSignal(string path)
+{
+	cout << "\nSignal from " << path;
+}
+
+void BaseClass::ShowHandler(string path, string message)
+{
+	cout << "\nSignal to " << path
+		<< " Text: " << message << " (class: " << branch_class_num_ << ")";
+}
+
 string BaseClass::get_path_stage(const string &obj_path, const int path_level)
 {
-
 	// ps stands for path stage
 	// first_ps_token is the index of the first symbol of the potential path stage
 	int first_ps_token = (obj_path.front() == '/') ? 1 : -1;
@@ -268,6 +420,119 @@ BaseClass* BaseClass::get_obj_by_path(const string& obj_path)
 	}
 
 	return current_ps_parent_obj;
+}
+
+void BaseClass::SetDetectedConnection(BaseClass* emitter_ptr, BaseClass* handler_ptr)
+{
+	switch (emitter_ptr->get_class_number())
+	{
+	case 1:
+		emitter_ptr->SetConnection(SIGNAL(BaseClass::ShowSignal), 
+			HANDLER(BaseClass::ShowHandler), (BaseClass*)handler_ptr);
+		break;
+	case 2:
+		emitter_ptr->SetConnection(SIGNAL(BranchClass_2::ShowSignal), 
+			HANDLER(BranchClass_2::ShowHandler), (BranchClass_2*)handler_ptr);
+		break;
+	case 3:
+		emitter_ptr->SetConnection(SIGNAL(BranchClass_3::ShowSignal),
+			HANDLER(BranchClass_3::ShowHandler), (BranchClass_3*)handler_ptr);
+		break;
+	case 4:
+		emitter_ptr->SetConnection(SIGNAL(BranchClass_4::ShowSignal),
+			HANDLER(BranchClass_4::ShowHandler), (BranchClass_4*)handler_ptr);
+		break;
+	case 5:
+		emitter_ptr->SetConnection(SIGNAL(BranchClass_5::ShowSignal),
+			HANDLER(BranchClass_5::ShowHandler), (BranchClass_5*)handler_ptr);
+		break;
+	case 6:
+		emitter_ptr->SetConnection(SIGNAL(BranchClass_6::ShowSignal),
+			HANDLER(BranchClass_6::ShowHandler), (BranchClass_6*)handler_ptr);
+		break;
+	}
+}
+
+void BaseClass::DeleteDetectedConnection(BaseClass* emitter_ptr, BaseClass* handler_ptr)
+{
+	switch (emitter_ptr->get_class_number())
+	{
+	case 1:
+		emitter_ptr->DeleteConnection(SIGNAL(BaseClass::ShowSignal),
+			HANDLER(BaseClass::ShowHandler), (BaseClass*)handler_ptr);
+		break;
+	case 2:
+		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_2::ShowSignal),
+			HANDLER(BranchClass_2::ShowHandler), (BranchClass_2*)handler_ptr);
+		break;
+	case 3:
+		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_3::ShowSignal),
+			HANDLER(BranchClass_3::ShowHandler), (BranchClass_3*)handler_ptr);
+		break;
+	case 4:
+		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_4::ShowSignal),
+			HANDLER(BranchClass_4::ShowHandler), (BranchClass_4*)handler_ptr);
+		break;
+	case 5:
+		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_5::ShowSignal),
+			HANDLER(BranchClass_5::ShowHandler), (BranchClass_5*)handler_ptr);
+		break;
+	case 6:
+		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_6::ShowSignal),
+			HANDLER(BranchClass_6::ShowHandler), (BranchClass_6*)handler_ptr);
+		break;
+	}
+}
+
+void BaseClass::DetectEmittion(string message)
+{
+	// This method is intermediary between signal 
+	// initialization and its implementation
+
+	BaseClass* temp_obj_ptr = this;
+
+	// Checking readiness of all parents and current object
+	while (temp_obj_ptr != progenitor->children_list_.front())
+	{
+		if (temp_obj_ptr->get_obj_state())
+		{
+			temp_obj_ptr = temp_obj_ptr->get_obj_parent();
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	temp_obj_ptr = this;
+
+	switch (branch_class_num_)
+	{
+	case 1:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BaseClass::ShowSignal), message);
+		break;
+	case 2:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_2::ShowSignal), message);
+		break;
+	case 3:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_3::ShowSignal), message);
+		break;
+	case 4:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_4::ShowSignal), message);
+		break;
+	case 5:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_5::ShowSignal), message);
+		break;
+	case 6:
+
+		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_6::ShowSignal), message);
+		break;
+	}
 }
 
 void BaseClass::ShowNextTreeObj(BaseClass* current_obj_ptr, 

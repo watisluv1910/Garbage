@@ -18,26 +18,26 @@
     <ClCompile Include="main.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="base_class.c++">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="application_class.c++">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_2.c++">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_3.c++">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_4.c++">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="branch_class_6.c++">
+      <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="branch_class_5.c++">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="branch_class_6.c++">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="branch_class_4.c++">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_3.c++">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="branch_class_2.c++">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="base_class.c++">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
+    <ClCompile Include="application_class.c++">
+      <Filter>Файлы ресурсов</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

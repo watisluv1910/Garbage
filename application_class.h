@@ -15,8 +15,11 @@ public:
 	// Main states setter method
 	void SetStates();
 
-	// Main tree navigation method
-	void StartTreeNavigation();
+	// Main connection setter method
+	void HandleConnections();
+
+	// Main instruction handling method
+	void HandleInstructions();
 
 	// Main application method
 	int ExecuteApp();
