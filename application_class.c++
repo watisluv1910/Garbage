@@ -7,9 +7,6 @@
 
 using std::cin;
 using std::cout;
-using std::cerr;
-using std::numeric_limits;
-using std::streamsize;
 
 ApplicationClass::ApplicationClass(BaseClass* parent_ptr) 
 {
@@ -44,7 +41,7 @@ void ApplicationClass::FormTree()
 		{
 			// Showing the existing part of the tree:
 			progenitor->children_list_.front()->ShowTree();
-			cerr << "\nThe head object " << path << " is not found"; // Error
+			cout << "\nThe head object " << path << " is not found"; // Error
 
 			exit(1); // Exit from the programm with error code 1
 		}
@@ -174,7 +171,7 @@ void ApplicationClass::HandleInstructions()
 			}
 			else
 			{
-				cerr << "Object is not found: " 
+				cout << "Object is not found: " 
 					<< stated_obj->get_obj_name() << " " << path; // Error
 			}
 		}
@@ -192,7 +189,7 @@ void ApplicationClass::HandleInstructions()
 			}
 			else
 			{
-				cerr << path << tree_space << "Object is not found"; // Error
+				cout << path << tree_space << "Object is not found"; // Error
 			}
 		}
 		else if (instruction == "EMIT")
@@ -211,7 +208,7 @@ void ApplicationClass::HandleInstructions()
 			}
 			else
 			{
-				cerr << "\nObject " << path << " not found"; // Error
+				cout << "\nObject " << path << " not found"; // Error
 			}
 		}
 		else if (instruction == "SET_CONDITION")
@@ -227,7 +224,7 @@ void ApplicationClass::HandleInstructions()
 			}
 			else
 			{
-				cerr << "\nObject " << path << " not found"; // Error
+				cout << "\nObject " << path << " not found"; // Error
 			}
 		}
 		else if (instruction == "SET_CONNECT" || instruction == "DELETE_CONNECT")
@@ -243,11 +240,11 @@ void ApplicationClass::HandleInstructions()
 			{
 				if (!path_stage_obj)
 				{
-					cerr << "\nObject " << path << " not found"; // Error
+					cout << "\nObject " << path << " not found"; // Error
 				}
 				else
 				{
-					cerr << "\nHandler object " << handler_obj_path << " not found"; // Error
+					cout << "\nHandler object " << handler_obj_path << " not found"; // Error
 				}
 			}
 			else
