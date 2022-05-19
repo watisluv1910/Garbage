@@ -116,21 +116,17 @@ void BaseClass::set_obj_state(bool state)
 		}
 		// If all previous parents in branch are ready:
 		this->state_ = true;
-
-		for (size_t i = 0; i < children_list_.size(); i++)
-		{
-			this->children_list_.at(i)->set_obj_state(state);
-		}
 	}
 	else
 	{
 		this->state_ = false;
-
-		for (size_t i = 0; i < children_list_.size(); i++)
-		{
-			this->children_list_.at(i)->set_obj_state(state);
-		}
 	}
+
+	for (size_t i = 0; i < children_list_.size(); i++)
+	{
+		this->children_list_.at(i)->set_obj_state(state);
+	}
+
 	return;
 }
 
