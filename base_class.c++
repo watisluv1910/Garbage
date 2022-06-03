@@ -1,14 +1,13 @@
 #include "base_class.h"
-#include "branch_class_2.h"
-#include "branch_class_3.h"
-#include "branch_class_4.h"
-#include "branch_class_5.h"
-#include "branch_class_6.h"
+#include "network_class.h"
+#include "console_class.h"
+#include "controller_class.h"
+#include "pathfinder_class.h"
+#include "tower_class.h"
+#include "phone_class.h"
+#include "screen_class.h"
 
 using std::cout;
-
-// progenitor (root) object (positioned above the head object)
-BaseClass* BaseClass::progenitor = new BaseClass(); 
 
 BaseClass::BaseClass(string obj_name, BaseClass* parent_ptr) 
 {
@@ -16,11 +15,6 @@ BaseClass::BaseClass(string obj_name, BaseClass* parent_ptr)
 	if (parent_ptr) // Object isn't a head
 	{ 
 		set_obj_parent(parent_ptr);
-	}
-	else // Object is head
-	{ 
-		// Making progenitor a parent of the head object
-		set_obj_parent(progenitor); 
 	}
 }
 
@@ -95,6 +89,18 @@ BaseClass* BaseClass::get_obj_by_name(string obj_name)
 	}
 
 	return this; // Returns the pointer at itself if no matches were found
+}
+
+BaseClass* BaseClass::get_head_obj()
+{
+	BaseClass* temp_obj = this;
+
+	while (temp_obj->get_obj_parent() != nullptr)
+	{
+		temp_obj = temp_obj->get_obj_parent();
+	}
+
+	return temp_obj;
 }
 
 void BaseClass::set_obj_state(bool state)
@@ -205,7 +211,7 @@ size_t BaseClass::get_class_number()
 
 string BaseClass::get_absolute_path()
 {
-	if (this == progenitor->children_list_.front())
+	if (this->parent_ptr_ == nullptr)
 	{
 		// If current object is head:
 		return "/";
@@ -218,7 +224,7 @@ string BaseClass::get_absolute_path()
 
 		// Iteration over all branch from bottom to top,
 		// until the head object won't be reached:
-		while (current_obj_ptr != progenitor->children_list_.front())
+		while (current_obj_ptr != get_head_obj())
 		{
 			path = "/" + current_obj_ptr->get_obj_name() + path;
 
@@ -228,6 +234,16 @@ string BaseClass::get_absolute_path()
 
 		// Returning absolute path:
 		return path;
+	}
+}
+
+void BaseClass::EraseSubstring(string& message, const string substring)
+{
+	int iterator = 0;
+
+	while ((iterator = message.find(substring)) != string::npos)
+	{
+		message.erase(iterator, substring.length());
 	}
 }
 
@@ -250,33 +266,29 @@ void BaseClass::EmitSignal(TYPE_SIGNAL signal_ptr, string& message)
 	// Iteration over all current object's connections:
 	for (size_t i = 0; i < connections_list_.size(); i++)
 	{
-		if (connections_list_.at(i)->signal_ptr == signal_ptr)
+		if (is_first_signal)
 		{
-			if (is_first_signal)
-			{
-				ShowSignal(current_path);
-				is_first_signal = false;
-			}
+			TrySignal(current_path, message);
+			is_first_signal = false;
+		}
 
-			// Is the object is ready:
-			if (connections_list_.at(i)->object_ptr->get_obj_state())
-			{
-				ShowHandler(
-					connections_list_.at(i)->object_ptr->get_absolute_path(), message);
-			}
+		// Is the object is ready:
+		if (connections_list_.at(i)->object_ptr->get_obj_state())
+		{
+			connections_list_.at(i)->object_ptr->TryHandler(
+				connections_list_.at(i)->object_ptr->get_absolute_path(), message);
 		}
 	}
 }
 
-void BaseClass::ShowSignal(string path)
+void BaseClass::TrySignal(string path, string message)
 {
-	cout << "\nSignal from " << path;
+	return;
 }
 
-void BaseClass::ShowHandler(string path, string message)
+void BaseClass::TryHandler(string path, string message)
 {
-	cout << "\nSignal to " << path
-		<< " Text: " << message << " (class: " << branch_class_num_ << ")";
+	return;
 }
 
 string BaseClass::get_path_stage(const string &obj_path, const int path_level)
@@ -288,7 +300,6 @@ string BaseClass::get_path_stage(const string &obj_path, const int path_level)
 	// ps stands for path stage
 	// last_ps_token is the index of the last symbol of the potential path stage
 	int last_ps_token = obj_path.size() - 1;
-
 
 	int curr_ps_level = (obj_path.front() == '/') ? 1 : 0;
 
@@ -349,18 +360,13 @@ BaseClass* BaseClass::get_obj_by_path(const string& obj_path)
 	else if (obj_path == "/")
 	{
 		// Single slash is a sygn of head object
-		return progenitor->children_list_.front();
+		return get_head_obj();
 	}
 	else if (obj_path.substr(0, 2) == "//")
 	{
 		// Double slash before the object name 
 		// is a sygn of absolute path from head object
-		BaseClass* path_stage_obj = progenitor->get_obj_by_name(obj_path.substr(2));
-
-		if (path_stage_obj == progenitor)
-		{
-			return nullptr;
-		}
+		BaseClass* path_stage_obj = get_head_obj()->get_obj_by_name(obj_path.substr(2));
 
 		return path_stage_obj;
 	}
@@ -428,69 +434,95 @@ BaseClass* BaseClass::get_obj_by_path(const string& obj_path)
 	return current_ps_parent_obj;
 }
 
+vector<string> BaseClass::ParseString(string message, string delimiter)
+{
+	size_t curr_pos = 0;
+	string token;
+	vector<string> parsed_message = {};
+
+	while ((curr_pos = message.find(delimiter)) != string::npos) 
+	{
+		token = message.substr(0, curr_pos);
+		parsed_message.push_back(token);
+		message.erase(0, curr_pos + delimiter.length());
+	}
+
+	parsed_message.push_back(message);
+
+	return parsed_message;
+}
+
 void BaseClass::SetDetectedConnection(BaseClass* emitter_ptr, BaseClass* handler_ptr)
 {
-	switch (emitter_ptr->get_class_number())
+	switch (handler_ptr->get_class_number())
 	{
 	case 1:
-		emitter_ptr->SetConnection(SIGNAL(BaseClass::ShowSignal), 
-			HANDLER(BaseClass::ShowHandler), (BaseClass*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(NetworkClass::TrySignal),
+			HANDLER(NetworkClass::TryHandler), (NetworkClass*)handler_ptr);
 		break;
 	case 2:
-		emitter_ptr->SetConnection(SIGNAL(BranchClass_2::ShowSignal), 
-			HANDLER(BranchClass_2::ShowHandler), (BranchClass_2*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(ConsoleClass::TrySignal), 
+			HANDLER(ConsoleClass::TryHandler), (ConsoleClass*)handler_ptr);
 		break;
 	case 3:
-		emitter_ptr->SetConnection(SIGNAL(BranchClass_3::ShowSignal),
-			HANDLER(BranchClass_3::ShowHandler), (BranchClass_3*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(ControllerClass::TrySignal),
+			HANDLER(ControllerClass::TryHandler), (ControllerClass*)handler_ptr);
 		break;
 	case 4:
-		emitter_ptr->SetConnection(SIGNAL(BranchClass_4::ShowSignal),
-			HANDLER(BranchClass_4::ShowHandler), (BranchClass_4*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(PathfinderClass::TrySignal),
+			HANDLER(PathfinderClass::TryHandler), (PathfinderClass*)handler_ptr);
 		break;
 	case 5:
-		emitter_ptr->SetConnection(SIGNAL(BranchClass_5::ShowSignal),
-			HANDLER(BranchClass_5::ShowHandler), (BranchClass_5*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(TowerClass::TrySignal),
+			HANDLER(TowerClass::TryHandler), (TowerClass*)handler_ptr);
 		break;
 	case 6:
-		emitter_ptr->SetConnection(SIGNAL(BranchClass_6::ShowSignal),
-			HANDLER(BranchClass_6::ShowHandler), (BranchClass_6*)handler_ptr);
+		emitter_ptr->SetConnection(SIGNAL(PhoneClass::TrySignal),
+			HANDLER(PhoneClass::TryHandler), (PhoneClass*)handler_ptr);
+		break;
+	case 7:
+		emitter_ptr->SetConnection(SIGNAL(ScreenClass::TrySignal),
+			HANDLER(ScreenClass::TryHandler), (ScreenClass*)handler_ptr);
 		break;
 	}
 }
 
 void BaseClass::DeleteDetectedConnection(BaseClass* emitter_ptr, BaseClass* handler_ptr)
 {
-	switch (emitter_ptr->get_class_number())
+	switch (handler_ptr->get_class_number())
 	{
 	case 1:
-		emitter_ptr->DeleteConnection(SIGNAL(BaseClass::ShowSignal),
-			HANDLER(BaseClass::ShowHandler), (BaseClass*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(NetworkClass::TrySignal),
+			HANDLER(NetworkClass::TryHandler), (NetworkClass*)handler_ptr);
 		break;
 	case 2:
-		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_2::ShowSignal),
-			HANDLER(BranchClass_2::ShowHandler), (BranchClass_2*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(ConsoleClass::TrySignal),
+			HANDLER(ConsoleClass::TryHandler), (ConsoleClass*)handler_ptr);
 		break;
 	case 3:
-		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_3::ShowSignal),
-			HANDLER(BranchClass_3::ShowHandler), (BranchClass_3*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(ControllerClass::TrySignal),
+			HANDLER(ControllerClass::TryHandler), (ControllerClass*)handler_ptr);
 		break;
 	case 4:
-		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_4::ShowSignal),
-			HANDLER(BranchClass_4::ShowHandler), (BranchClass_4*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(PathfinderClass::TrySignal),
+			HANDLER(PathfinderClass::TryHandler), (PathfinderClass*)handler_ptr);
 		break;
 	case 5:
-		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_5::ShowSignal),
-			HANDLER(BranchClass_5::ShowHandler), (BranchClass_5*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(TowerClass::TrySignal),
+			HANDLER(TowerClass::TryHandler), (TowerClass*)handler_ptr);
 		break;
 	case 6:
-		emitter_ptr->DeleteConnection(SIGNAL(BranchClass_6::ShowSignal),
-			HANDLER(BranchClass_6::ShowHandler), (BranchClass_6*)handler_ptr);
+		emitter_ptr->DeleteConnection(SIGNAL(PhoneClass::TrySignal),
+			HANDLER(PhoneClass::TryHandler), (PhoneClass*)handler_ptr);
+		break;
+	case 7:
+		emitter_ptr->DeleteConnection(SIGNAL(ScreenClass::TrySignal),
+			HANDLER(ScreenClass::TryHandler), (ScreenClass*)handler_ptr);
 		break;
 	}
 }
 
-void BaseClass::DetectEmittion(string message)
+void BaseClass::SetEmittion(string message)
 {
 	// This method is intermediary between signal 
 	// initialization and its implementation
@@ -498,7 +530,7 @@ void BaseClass::DetectEmittion(string message)
 	BaseClass* temp_obj_ptr = this;
 
 	// Checking readiness of all parents and current object
-	while (temp_obj_ptr != progenitor->children_list_.front())
+	while (temp_obj_ptr != get_head_obj())
 	{
 		if (temp_obj_ptr->get_obj_state())
 		{
@@ -510,33 +542,35 @@ void BaseClass::DetectEmittion(string message)
 		}
 	}
 
-	temp_obj_ptr = this;
-
 	switch (branch_class_num_)
 	{
 	case 1:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BaseClass::ShowSignal), message);
+		this->EmitSignal(SIGNAL(NetworkClass::TrySignal), message);
 		break;
 	case 2:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_2::ShowSignal), message);
+		this->EmitSignal(SIGNAL(ConsoleClass::TrySignal), message);
 		break;
 	case 3:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_3::ShowSignal), message);
+		this->EmitSignal(SIGNAL(ControllerClass::TrySignal), message);
 		break;
 	case 4:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_4::ShowSignal), message);
+		this->EmitSignal(SIGNAL(PathfinderClass::TrySignal), message);
 		break;
 	case 5:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_5::ShowSignal), message);
+		this->EmitSignal(SIGNAL(TowerClass::TrySignal), message);
 		break;
 	case 6:
 
-		temp_obj_ptr->EmitSignal(SIGNAL(BranchClass_6::ShowSignal), message);
+		this->EmitSignal(SIGNAL(PhoneClass::TrySignal), message);
+		break;
+	case 7:
+
+		this->EmitSignal(SIGNAL(ScreenClass::TrySignal), message);
 		break;
 	}
 }
@@ -572,6 +606,19 @@ void BaseClass::ShowNextTreeObj(BaseClass* current_obj_ptr,
 		cout << '\n' << tree_level_space << current_obj_ptr->get_obj_name();
 	}
 
+	if (current_obj_ptr == get_head_obj()->children_list_.at(3)) // Tower
+	{
+		get_head_obj()->children_list_.front()->
+			SetEmittion("CONSOLE:TOWER Display initial tower data at level " + 
+				std::to_string(tree_level + 1));
+	}
+	else if (current_obj_ptr == get_head_obj()->children_list_.at(4)) // Phone
+	{
+		get_head_obj()->children_list_.front()->
+			SetEmittion("CONSOLE:PHONE Display initial phone data at level " +
+				std::to_string(tree_level + 1));
+	}
+
 	// Returning to the previous element of the recursion 
 	// due to the emptiness of children list:
 	if (current_obj_ptr->children_list_.empty()) return;
@@ -589,7 +636,7 @@ void BaseClass::ShowTree(const string& tree_parameter)
 {
 	// tree_parameter defines the way of tree output:
 	cout << ((tree_parameter == "with_readiness") ?
-		"\nThe tree of objects and their readiness" : "Object tree");
+		"The tree of objects and their readiness:" : "The tree of objects:");
 
 	// The tree is printed with the help of recursion.
 	// The exit condition is the lack of children objects.

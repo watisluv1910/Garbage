@@ -1,11 +1,11 @@
-﻿#include "application_class.h"
+﻿#include "network_class.h"
 
 int main()
 {
-    ApplicationClass object; // Application object creation
+    NetworkClass network_system; // Application object creation
 
-    object.FormTree();
+    network_system.FormTree();
 
     // Returning the result of ExecuteApp method according to the task:
-    return object.ExecuteApp();
+    return network_system.ExecuteApp();
 }

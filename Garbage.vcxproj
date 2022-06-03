@@ -139,23 +139,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="application_class.c++" />
+    <ClCompile Include="network_class.c++" />
     <ClCompile Include="base_class.c++" />
-    <ClCompile Include="branch_class_2.c++" />
-    <ClCompile Include="branch_class_3.c++" />
-    <ClCompile Include="branch_class_4.c++" />
-    <ClCompile Include="branch_class_5.c++" />
-    <ClCompile Include="branch_class_6.c++" />
+    <ClCompile Include="console_class.c++" />
+    <ClCompile Include="controller_class.c++" />
+    <ClCompile Include="pathfinder_class.c++" />
+    <ClCompile Include="screen_class.c++" />
+    <ClCompile Include="tower_class.c++" />
+    <ClCompile Include="phone_class.c++" />
     <ClCompile Include="main.c++" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application_class.h" />
+    <ClInclude Include="network_class.h" />
     <ClInclude Include="base_class.h" />
-    <ClInclude Include="branch_class_2.h" />
-    <ClInclude Include="branch_class_3.h" />
-    <ClInclude Include="branch_class_4.h" />
-    <ClInclude Include="branch_class_5.h" />
-    <ClInclude Include="branch_class_6.h" />
+    <ClInclude Include="console_class.h" />
+    <ClInclude Include="controller_class.h" />
+    <ClInclude Include="pathfinder_class.h" />
+    <ClInclude Include="screen_class.h" />
+    <ClInclude Include="tower_class.h" />
+    <ClInclude Include="phone_class.h" />
+    <ClInclude Include="tower_struct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

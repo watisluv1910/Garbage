@@ -3,11 +3,11 @@
 
 #include "base_class.h"
 
-class ApplicationClass : public BaseClass {
+class NetworkClass : public BaseClass {
 public:
 
 	// Parametrized constructor
-	ApplicationClass(BaseClass* parent_ptr = nullptr);
+	NetworkClass(string obj_name = "Network", BaseClass* parent_ptr = nullptr);
 	
 	// Main tree building method
 	void FormTree();

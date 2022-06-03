@@ -42,6 +42,9 @@ public:
 	// Getter for object pointer by name of the object
 	BaseClass* get_obj_by_name(string obj_name);
 
+	// 
+	BaseClass* get_head_obj();
+
 	// Setter for state_ field
 	void set_obj_state(bool state);
 
@@ -57,11 +60,17 @@ public:
 	// Method that return the path from head to current object
 	string get_absolute_path();
 
+	// 
+	void EraseSubstring(string& message, const string substring);
+
+	//
+	vector<string> ParseString(string message, string delimiter = " ");
+
 	// Signal method for each branch class
-	virtual void ShowSignal(string path);
+	virtual void TrySignal(string path, string message);
 	
 	// Handler method for each branch class
-	virtual void ShowHandler(string path, string message);
+	virtual void TryHandler(string path, string message);
 
 	// Getter for parent object pointer by the path
 	BaseClass* get_obj_by_path(const string& obj_path);
@@ -73,15 +82,12 @@ public:
 	void DeleteDetectedConnection(BaseClass* emitter_ptr, BaseClass* handler_ptr);
 
 	// Main emittion method
-	void DetectEmittion(string message);
+	void SetEmittion(string message);
 
 	// Method that outputs object tree in two different variations
 	void ShowTree(const string& tree_parameter = "without_readiness");
 
 	vector<BaseClass*> children_list_;
-
-	// progenitor (root) object (positioned above the head object)
-	static BaseClass* progenitor;
 protected:
 
 	// The number of the branch class
@@ -90,7 +96,7 @@ private:
 
 	string obj_name_ = ""; // Object name
 	BaseClass* parent_ptr_ = nullptr; // Pointer at parent object
-	bool state_ = true; // Object state definition
+	bool state_ = false; // Object state definition
 
 	// Structure of the connection
 	struct connection_data
@@ -126,7 +132,7 @@ private:
 	void DeleteConnection(TYPE_SIGNAL signal_ptr,
 		TYPE_HANDLER handler_ptr, BaseClass* object_ptr);
 
-	// Service method for DetectEmittion
+	// Service method for SetEmittion
 	void EmitSignal(TYPE_SIGNAL signal_ptr, string& message);
 	
 	// Service recursive method for ShowTree

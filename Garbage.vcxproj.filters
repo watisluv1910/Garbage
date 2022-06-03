@@ -18,48 +18,57 @@
     <ClCompile Include="main.c++">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="branch_class_6.c++">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_5.c++">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_4.c++">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_3.c++">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
-    <ClCompile Include="branch_class_2.c++">
-      <Filter>Файлы ресурсов</Filter>
+    <ClCompile Include="network_class.c++">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="base_class.c++">
-      <Filter>Файлы ресурсов</Filter>
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="application_class.c++">
-      <Filter>Файлы ресурсов</Filter>
+    <ClCompile Include="console_class.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="controller_class.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="pathfinder_class.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="tower_class.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="phone_class.c++">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="screen_class.c++">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="application_class.h">
+    <ClInclude Include="network_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="branch_class_2.h">
+    <ClInclude Include="console_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="branch_class_3.h">
+    <ClInclude Include="controller_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="branch_class_4.h">
+    <ClInclude Include="pathfinder_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="branch_class_5.h">
+    <ClInclude Include="tower_class.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="branch_class_6.h">
+    <ClInclude Include="phone_class.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="screen_class.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="tower_struct.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

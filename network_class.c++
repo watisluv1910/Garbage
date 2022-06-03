@@ -1,92 +1,61 @@
-#include "application_class.h"
-#include "branch_class_2.h"
-#include "branch_class_3.h"
-#include "branch_class_4.h"
-#include "branch_class_5.h"
-#include "branch_class_6.h"
+#include "network_class.h"
+#include "console_class.h"
+#include "controller_class.h"
+#include "pathfinder_class.h"
+#include "tower_class.h"
+#include "phone_class.h"
+#include "screen_class.h"
 
 using std::cin;
 using std::cout;
 
-ApplicationClass::ApplicationClass(BaseClass* parent_ptr) 
+NetworkClass::NetworkClass(string obj_name, BaseClass* parent_ptr) : BaseClass(obj_name, parent_ptr) {};
+
+void NetworkClass::FormTree() 
 {
-	// Initialization of the progenitor object:
-	BaseClass::progenitor->set_obj_parent(parent_ptr);
-	BaseClass::progenitor->set_obj_name("progenitor");
-	BaseClass::progenitor->set_obj_state(true);
-};
+	// Initialization of the components of the network:
 
-void ApplicationClass::FormTree() 
-{
-	string head_name = "", child_name = "", path = "";
-	int branch_class_number = 0;
+	BaseClass* console_obj_ptr = new ConsoleClass("Console", this);
 
-	cin >> head_name;
+	BaseClass* controller_obj_ptr = new ControllerClass("Controller", this);
 
-	BaseClass* head = new BaseClass(head_name); // Head object creation
+	BaseClass* pathfinder_obj_ptr = new PathfinderClass("Pathfinder", this);
 
-	BaseClass* child = nullptr;
+	BaseClass* tower_obj_ptr = new TowerClass("Tower", this);
 
-	cin >> path;
+	BaseClass* phone_obj_ptr = new PhoneClass("Phone", this);
 
-	while (path != "endtree") // Exit condition
-	{ 
-		cin >> child_name >> branch_class_number;
+	BaseClass* screen_obj_ptr = new ScreenClass("Screen", this);
 
-		// The pointer at the current child's parent object
-		BaseClass* parent_ptr = progenitor->children_list_.front()->get_obj_by_path(path);
+	// Setting connections (according to the scheme):
+	this->SetDetectedConnection(this, console_obj_ptr);
 
-		// If parent object wasn't found:
-		if (!parent_ptr)
+	// REWORK CONNECTIONS
+
+	for (size_t i = 1; i < children_list_.size(); i++)
+	{
+		if (i == 1 || i == 3 || i == 4) // Controller/Tower/Phone
 		{
-			// Showing the existing part of the tree:
-			progenitor->children_list_.front()->ShowTree();
-			cout << "\nThe head object " << path << " is not found"; // Error
-
-			exit(1); // Exit from the programm with error code 1
+			console_obj_ptr->SetDetectedConnection(console_obj_ptr, children_list_.at(i));
 		}
-
-		switch (branch_class_number)
+		if (i == 2 || i == 3 || i == 5) // Pathfinder/Tower/Screen
 		{
-		case 2:
+			controller_obj_ptr->SetDetectedConnection(controller_obj_ptr, children_list_.at(i));
+		}
+		if (i == 2 || i == 4 || i == 5) // Pathfinder/Phone/Screen
 		{
-			// Initializing new child object
-			child = new BranchClass_2(child_name, parent_ptr);
-			break;
+			tower_obj_ptr->SetDetectedConnection(tower_obj_ptr, children_list_.at(i));
 		}
-		case 3:
-		{
-			// Initializing new child object
-			child = new BranchClass_3(child_name, parent_ptr);
-			break;
-		}
-		case 4:
-		{
-			// Initializing new child object
-			child = new BranchClass_4(child_name, parent_ptr);
-			break;
-		}
-		case 5:
-		{
-			// Initializing new child object
-			child = new BranchClass_5(child_name, parent_ptr);
-			break;
-		}
-		case 6:
-		{
-			// Initializing new child object
-			child = new BranchClass_6(child_name, parent_ptr);
-			break;
-		}
-		}
-
-		cin >> path; // Entering path to the new object
 	}
+
+	pathfinder_obj_ptr->SetDetectedConnection(pathfinder_obj_ptr, controller_obj_ptr);
+
+	phone_obj_ptr->SetDetectedConnection(phone_obj_ptr, tower_obj_ptr);
 
 	return;
 }
 
-void ApplicationClass::SetStates()
+void NetworkClass::SetStates()
 {
 	string obj_name = "";
 
@@ -96,11 +65,11 @@ void ApplicationClass::SetStates()
 	while (cin >> obj_name >> i_state)
 	{
 		// Search for the element in the tree and if it was found - update its state:
-		progenitor->get_obj_by_name(obj_name)->set_obj_state(bool(i_state));
+		this->get_obj_by_name(obj_name)->set_obj_state(bool(i_state));
 	}
 }
 
-void ApplicationClass::HandleConnections()
+void NetworkClass::HandleConnections()
 {
 	BaseClass* emitter_ptr = nullptr; // Signal emitter (signaling object)
 	BaseClass* handler_ptr = nullptr; // Signal handler (executor object)
@@ -116,8 +85,8 @@ void ApplicationClass::HandleConnections()
 		cin >> handler_path;
 
 		// Initializing objects pointers:
-		emitter_ptr = progenitor->children_list_.front()->get_obj_by_path(emitter_path);
-		handler_ptr = progenitor->children_list_.front()->get_obj_by_path(handler_path);
+		emitter_ptr = this->get_obj_by_path(emitter_path);
+		handler_ptr = this->get_obj_by_path(handler_path);
 
 		// Setting connection between the pair of objects:
 		emitter_ptr->SetDetectedConnection(emitter_ptr, handler_ptr);
@@ -126,11 +95,11 @@ void ApplicationClass::HandleConnections()
 	}
 }
 
-void ApplicationClass::HandleInstructions()
+void NetworkClass::HandleInstructions()
 {
 	// Object that is set as the current chosen 
 	// (head by default) *Not used in KL_3_3
-	BaseClass* stated_obj = progenitor->children_list_.front();
+	BaseClass* stated_obj = this;
 
 	// Pointer at the object from path with current level
 	BaseClass* path_stage_obj = nullptr;
@@ -152,7 +121,7 @@ void ApplicationClass::HandleInstructions()
 		{
 			// Selecting an object from a path beginning with the head object:
 			path_stage_obj 
-				= progenitor->children_list_.front()->get_obj_by_path(path);
+				= this->get_obj_by_path(path);
 		}
 		else
 		{
@@ -204,7 +173,7 @@ void ApplicationClass::HandleInstructions()
 			if (path_stage_obj)
 			{
 				// Setting emittion:
-				path_stage_obj->DetectEmittion(message);
+				path_stage_obj->SetEmittion(message);
 			}
 			else
 			{
@@ -233,7 +202,7 @@ void ApplicationClass::HandleInstructions()
 			cin >> handler_obj_path;
 
 			BaseClass* handler_obj_ptr
-				= progenitor->children_list_.front()->get_obj_by_path(handler_obj_path);
+				= this->get_obj_by_path(handler_obj_path);
 
 			// If object from the path or handler object were not found:
 			if (!path_stage_obj || !handler_obj_ptr)
@@ -266,16 +235,13 @@ void ApplicationClass::HandleInstructions()
 	}
 }
 
-int ApplicationClass::ExecuteApp()
+int NetworkClass::ExecuteApp()
 {
-	// Head object ShowTree (without_parameters) method call:
-	progenitor->children_list_.front()->ShowTree();
+	// Bringing all objects to a ready state:
+	this->set_obj_state(true);
 
-	// Start processing connections
-	HandleConnections();
-
-	// Start processing instructions
-	HandleInstructions();
+	// Starting initial data processing:
+	this->SetEmittion("SYSTEM_ON");
 
 	return 0;
 };
